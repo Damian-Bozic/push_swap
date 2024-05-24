@@ -1,21 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbozic <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/21 15:43:30 by dbozic            #+#    #+#             */
-/*   Updated: 2024/03/21 15:44:17 by dbozic           ###   ########.fr       */
+/*   Created: 2024/02/29 12:54:11 by dbozic            #+#    #+#             */
+/*   Updated: 2024/03/04 12:41:34 by dbozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void *))
+void	*ft_memset(void *str, int c, size_t n)
 {
-	if (!lst)
-		return ;
-	del(lst->content);
-	free(lst);
+	int	i;
+
+	i = 0;
+	while (n-- > 0)
+	{
+		((char *)str)[i] = c;
+		i++;
+	}
+	return (str);
 }
+
+/*int	main(void)
+{
+#include <string.h>
+#include <stdio.h>
+	int		size;
+	char	c;
+	char	str[] = "If I had to guess this should work.";
+	char	*ptr;
+
+	c = '$';
+	size = 6;
+	ptr = ft_memset(str, c, size);
+	printf("%s", ptr);
+
+	c = '$';
+	size = 6;
+	ptr = memset(str, c, size);
+	printf("\n%s", ptr);
+
+}*/

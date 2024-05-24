@@ -1,21 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbozic <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/21 15:43:30 by dbozic            #+#    #+#             */
-/*   Updated: 2024/03/21 15:44:17 by dbozic           ###   ########.fr       */
+/*   Created: 2024/02/27 12:50:23 by dbozic            #+#    #+#             */
+/*   Updated: 2024/03/05 16:16:40 by dbozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void *))
+int	ft_isdigit(int c)
 {
-	if (!lst)
-		return ;
-	del(lst->content);
-	free(lst);
+	if (c >= '0' && c <= '9')
+		return (1);
+	else
+		return (0);
 }
+
+/*int	main(void)
+{
+	#include <ctype.h>
+	int	i;
+	char	c;
+
+	c = '2';
+	i = ft_isdigit(c);
+	db_printint(i);
+
+	c = '2';
+	i = isdigit(c);
+	db_printint(i);
+}*/
+//Value returned is nonzero if c falls into the tested class

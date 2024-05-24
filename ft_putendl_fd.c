@@ -1,21 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
+/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbozic <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/21 15:43:30 by dbozic            #+#    #+#             */
-/*   Updated: 2024/03/21 15:44:17 by dbozic           ###   ########.fr       */
+/*   Created: 2024/03/13 17:39:36 by dbozic            #+#    #+#             */
+/*   Updated: 2024/03/13 17:40:04 by dbozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void *))
+void	ft_putendl_fd(char *str, int fd)
 {
-	if (!lst)
-		return ;
-	del(lst->content);
-	free(lst);
+	ft_putstr_fd(str, fd);
+	ft_putchar_fd('\n', fd);
 }
+
+/*int	main(void)
+{
+	char	str[] = "This is unnervingly easly";
+	ft_putendl_fd(str, 1);
+}*/

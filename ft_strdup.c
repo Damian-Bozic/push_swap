@@ -1,21 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbozic <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/21 15:43:30 by dbozic            #+#    #+#             */
-/*   Updated: 2024/03/21 15:44:17 by dbozic           ###   ########.fr       */
+/*   Created: 2024/03/05 16:44:28 by dbozic            #+#    #+#             */
+/*   Updated: 2024/03/06 11:29:40 by dbozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void *))
+char	*ft_strdup(const char *str)
 {
-	if (!lst)
-		return ;
-	del(lst->content);
-	free(lst);
+	char	*ptr;
+
+	ptr = malloc(ft_strlen(str) + 1);
+	if (!ptr)
+		return (0);
+	ft_strlcpy(ptr, str, 1 + ft_strlen(str));
+	return (ptr);
 }
+
+/* int	main(void)
+{
+	#include <string.h>
+	#include <stdio.h>
+
+	char *ptr;
+	char str[19] = "Hello memory leaks\0";
+  	
+	ptr = ft_strdup(str);
+	printf("%s", ptr);
+	free (ptr);
+
+	ptr = strdup(str);
+	printf("\n%s", ptr);
+	free (ptr);
+	return 0;
+} */

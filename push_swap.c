@@ -12,104 +12,243 @@
 
 #include "push_swap.h"
 
-static int push_swap(t_list **lst, size_t lst_length)
+int	freearray(char **array)
 {
-	return (0);
+	int	i;
+
+	i = 0;
+	if (!array)
+		return (0);
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+	return (1);
 }
 
-static int	check_lst_for_chr(t_list **lst, int chr)
+char	**arraydup(char **array)
 {
-	char	*content;
+	int		i;
+	char	**rtn;
+
+	i = 0;
+	while (array[i])
+		i++;
+	rtn = malloc((i + 1) * sizeof(char *));
+	if (!rtn)
+		return (0);
+	i = 0;
+	while (array[i])
+	{
+		rtn[i] = ft_strdup(array[i]);
+		if (!rtn[i])
+		{
+			freearray(rtn);
+			return (0);
+		}
+		i++;
+	}
+	rtn[i] = NULL;
+	return (rtn);
+}
+
+int	checkfilters(char **array)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (array[i])
+	{
+		while (array[i][j])
+		{
+			if ((ft_isdigit(array[i][j]) == 0) &&
+				(!(array[i][j] == '-' && j == 0)))
+			{
+				ft_putstr_fd("Error\n", 2);
+				freearray(array);
+				return (0);
+			}
+			j++;
+		}
+		j = 0;
+		i++;
+	}
+	return (1);
+}
+
+int	ft_atoimod(const char *nptr, int *rtn)
+{
+	long	nbr;
+	int		sign;
+	int		i;
+
+	nbr = 0;
+	sign = 1;
+	i = 0;
+	if (!*nptr)
+		return (0);
+	if (*nptr == '-')
+		sign = -1;
+	if (*nptr == '-')
+		nptr++;
+	while (ft_isdigit(*nptr) && i++ < 11)
+	{
+		nbr = nbr * 10 + ((*nptr) - '0');
+		nptr++;
+	}
+	if (nbr > 2147483647)
+		ft_putstr_fd("Error\n", 2);
+	if (nbr > 2147483647)
+		return (0);
+	nbr = nbr * sign;
+	*rtn = nbr;
+	return (1);
+}
+
+t_list	*ft_intlstnew(int integer, int index)
+{
+	t_list	*starting_node;
+
+	starting_node = (t_list *)malloc(sizeof(t_list));
+	if (!starting_node)
+		return (NULL);
+	starting_node->integer = integer;
+	starting_node->index = index;
+	starting_node->next = (NULL);
+	return (starting_node);
+}
+
+void	ft_lstadd_rear(t_list **lst, t_list *new_node)
+{
+	t_list	*current;
+
+	if (!*lst)
+	{
+		*lst = new_node;
+		return ;
+	}
+	current = *lst;
+	while (current->next)
+		current = current->next;
+	current->next = new_node;
+}
+
+void	ft_lstclearmod(t_list **lst)
+{
 	t_list	*current;
 	t_list	*next;
 
+	if (!*lst)
+		return ;
 	current = *lst;
-	while(current)
+	while (current)
 	{
-		content = current->content;
-		if (content[0] == chr)
-			return(2);
 		next = current->next;
+		free(current);
 		current = next;
 	}
-	return (0);
+	*lst = NULL;
 }
-void do_nothing(void *str)
+
+t_list	*strarray_to_intlist(char **array)
 {
-	return ;
+	int		i;
+	int		nbr;
+	t_list	*lst;
+	t_list	*temp;
+
+	i = 0;
+	nbr = 0;
+	lst = NULL;
+	while (array[i])
+	{
+		if (!ft_atoimod(array[i], &nbr))
+			return (NULL);
+		temp = ft_intlstnew(nbr, i);
+		ft_lstadd_rear(&lst, temp);
+		temp = NULL;
+		i++;
+	}
+	return (lst);
+}
+
+t_list	*empty_intlst(int size)
+{
+	t_list	*lst;
+	t_list	*new_node;
+	int		i;
+
+	if (size <= 0)
+		return (NULL);
+	i = 0;
+	new_node = lst;
+	while (size > 0)
+	{
+		new_node = ft_intlstnew(-2147483648, i);
+		ft_lstadd_rear(&lst, new_node);
+		size--;
+		i++;
+	}
+	return (lst);
+}
+
+void	printlist(t_list *lst)
+{
+	t_list *current;
+	int	i;
+
+	i = 0;
+	current = lst;
+	if (!lst)
+	{
+		ft_printf("List %p is NULL\n", lst);
+		return ;
+	}
+	ft_printf("List %p contents:\n", lst);
+	while (current)
+	{
+		ft_printf("Node: %d,	Index: %d,	Value: %d\n", i,
+			current->index, current->integer);
+		current = current->next;
+		i++;
+	}
+}
+
+void	sort_stack(t_list *stack_a, t_list *stack_b, int size)
+{
+	int a = ft_lstsize(stack_a);
+	int b = ft_lstsize(stack_b);
+	printf("stack sizes\n a: %d\n b: %d\n", a, b);
+	printlist(stack_a);
+	printlist(stack_b);
 }
 
 int	main(int argv, char **argc)
 {
-	t_list	*lst;
-	t_list	*current;
-	int		i;
+	t_list	*stack_a;
+	char	**array;
 
-	i = 1;
-	lst = ft_lstnew(argc[0]);
-	ft_printf("Argv: %d\n", argv);
-	if (argv < 2)
+	if (argv == 2)
+		array = ft_split(argc[1], '\n');
+	else if (argv > 2)
+		array = arraydup(&argc[1]);
+	if (!array || argv < 2)
 		return (0);
-	
-	while (argc[i])
-	{
-		if (!(argc[i][0] >= '0' && argc[i][0] <= '9') || !(argc[i][1] == '\0')
-			|| (check_lst_for_chr(&lst, argc[i][0]) == 2))
-		{
-			ft_putstr_fd("Error\n", 2);
-			ft_lstclear(&lst, do_nothing);
-			return(2);
-		}
-		current = ft_lstnew(argc[i]);
-		ft_lstadd_back(&lst, current);
-		i++;
-	}
-	push_swap(&lst, argv - 1);	
-	return (0);
+	if (checkfilters(array) == 0)
+		return (0);
+	stack_a = strarray_to_intlist(array);
+	if (!stack_a)
+		return (0);
+	sort_stack(stack_a, empty_intlst(ft_lstsize(stack_a)), ft_lstsize(stack_a));
+	printf("Successful Run\n");
+	freearray(array);
+	ft_lstclearmod(&stack_a);
+	return (1);
 }
 
-/*
-USEFULL CODE THAT DIDNT WORK ORIGINALLY
-if (!(argc[i][0] >= '0' && argc[i][0] <= '9') || !(argc[i][1] == '\0'))
-{
-	ft_putstr_fd("Error\n", 2);
-	return(2);
-}
-*/
-
-// Sorting a list using a limited set of instructions on two rotatable stacks can be quite an interesting challenge! Let’s break it down.
-
-// First, let’s understand the available commands:
-
-// sa: Swap the first two elements at the top of stack A.
-// sb: Swap the first two elements at the top of stack B.
-// ss: Perform both sa and sb simultaneously.
-// pa: Push the first element at the top of B onto A (do nothing if B is empty).
-// pb: Push the first element at the top of A onto B (do nothing if A is empty).
-// ra: Rotate stack A by moving the first element to the last position.
-// rb: Rotate stack B by moving the first element to the last position.
-// rr: Perform both ra and rb simultaneously.
-// rra: Reverse rotate stack A by moving the last element to the first position.
-// rrb: Reverse rotate stack B by moving the last element to the first position.
-// rrr: Perform both rra and rrb simultaneously12.
-// Now, let’s devise an efficient algorithm to sort the list using these commands. We’ll focus on minimizing the number of instructions rather than the complexity of the algorithm.
-
-// Initial Setup:
-// Push all 10 items from list A onto stack A.
-// Stack B remains empty.
-// Sorting Algorithm:
-// While stack A is not sorted:
-// Take the first element from stack A (let’s call it x).
-// If x is already in the correct position (i.e., at the top of stack A), proceed to the next element.
-// Otherwise, follow these steps:
-// If x is in the second position, perform sa (swap the first two elements in stack A).
-// If x is closer to the top of stack A, perform ra (rotate stack A).
-// If x is closer to the bottom of stack A, perform rra (reverse rotate stack A).
-// After each operation, check if stack A is sorted.
-// If not, push the first element of stack A onto stack B.
-// Repeat steps 1-5 until only two elements remain in stack A.
-// If the remaining two elements are not in the correct order, perform sa to swap them.
-// Push all elements from stack B back onto stack A.
-// Result:
-// Stack A will be sorted in ascending order.
-// Stack B will be empty.
+// CHANGE ' ' TO '\n' AFTER TESTING!!!
+// double check that all printfs are ft_printfs

@@ -1,21 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
+/*   ft_isalpha.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbozic <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/21 15:43:30 by dbozic            #+#    #+#             */
-/*   Updated: 2024/03/21 15:44:17 by dbozic           ###   ########.fr       */
+/*   Created: 2024/02/27 12:50:23 by dbozic            #+#    #+#             */
+/*   Updated: 2024/03/08 10:54:29 by dbozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void *))
+int	ft_isalpha(int c)
 {
-	if (!lst)
-		return ;
-	del(lst->content);
-	free(lst);
+	if ((c >= 'a' && c <= 'z')
+		|| (c >= 'A' && c <= 'Z'))
+		return (1);
+	return (0);
 }
+
+/*int	main(void)
+{
+#include <ctype.h>
+	int	i;
+	char	c;
+
+	c = 'n';
+	i = 2;
+	i = ft_isalpha(c);
+	db_printint(i);
+
+	c = 'n';
+	i = 2;
+	i = isalpha(c);
+	db_printint(i);
+}*/
+//Value returned is nonzero if c falls into the tested class

@@ -1,21 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
+/*   ft_tolower.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbozic <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/21 15:43:30 by dbozic            #+#    #+#             */
-/*   Updated: 2024/03/21 15:44:17 by dbozic           ###   ########.fr       */
+/*   Created: 2024/02/27 18:21:34 by dbozic            #+#    #+#             */
+/*   Updated: 2024/02/27 18:31:34 by dbozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void *))
+int	ft_tolower(int c)
 {
-	if (!lst)
-		return ;
-	del(lst->content);
-	free(lst);
+	if (c >= 'A' && c <= 'Z')
+		return (c + 32);
+	return (c);
 }
+
+/*int	main(void)
+{
+	#include <ctype.h>
+	char b = 'A';
+	char c = 'A';
+	c = ft_tolower(c);
+	write(1, &c,1);
+	write(1, "\n", 1);
+	b = tolower(b);
+	write(1, &b, 1);
+}*/
