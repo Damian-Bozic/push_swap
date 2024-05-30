@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 /* 
-I have a stack of unique unsorted integers, I want to sort them but I have 
-a second empty stack i can use as well as the following commands:
+I have a stack of unique unsorted integers, I want to sort them with the lowest
+value at the top of stack A. I have a second empty stack i can use as well as
+the following commands:
 sa (swap a): Swap the first 2 elements at the top of stack a.
 Do nothing if there is only one or no elements.
 sb (swap b): Swap the first 2 elements at the top of stack b.
@@ -350,13 +351,13 @@ void	exec_command(t_list **stack_a, t_list **stack_b, char *cmd)
 	ft_printf("%s\n", cmd);
 }
 
-int	is_sorted(t_list **stack_a, t_list **stack_b, int size)
+int	is_sorted(t_list **stack, int size)
 {
 	t_list	*current;
 	t_list	*next;
 	
-	current = *stack_a;
-	if ((ft_lstsize(*stack_a) != size) || (*stack_b))
+	current = *stack;
+	if ((ft_lstsize(*stack) != size))
 		return (0);
 	while (current->next)
 	{
@@ -366,32 +367,6 @@ int	is_sorted(t_list **stack_a, t_list **stack_b, int size)
 		current = next;
 	}
 	return (1);
-}
-
-int find_smallest(t_list *stack)
-{
-	int		rtn;
-	int		i;
-	int		v;
-	t_list	*current;
-
-	i = 0;
-	rtn = 0;
-	if (!stack)
-		return (-1);
-	current = stack;
-	v = current->value;
-	while (current->next)
-	{
-		i++;
-		current = current->next;
-		if (current->value < v)
-		{
-			v = current->value;
-			rtn = i;
-		}
-	}
-	return (rtn);
 }
 
 int is_ordered(t_list *stack_a, int lowest)
@@ -424,12 +399,11 @@ int is_ordered(t_list *stack_a, int lowest)
 
 void	sort_tiny(t_list **stack_a, t_list **stack_b, int lowest)
 {
-	lowest = find_smallest(*stack_a);
-	if (is_sorted(stack_a, stack_b, ft_lstsize(*stack_a)) == 1)
+	if (is_sorted(stack_a, ft_lstsize(*stack_a)) == 1)
 		return ;
-	else if (is_ordered(*stack_a, find_smallest(*stack_a)))
+	else if (is_ordered(*stack_a, lowest))
 	{
-		if (find_smallest(*stack_a) == 1)
+		if (lowest == 1)
 			exec_command(stack_a, stack_b, "ra");
 		else
 			exec_command(stack_a, stack_b, "rra");
@@ -445,6 +419,100 @@ void	sort_tiny(t_list **stack_a, t_list **stack_b, int lowest)
 	}
 }
 
+int find_lowest(t_list *stack)
+{
+	int		rtn;
+	int		i;
+	int		v;
+	t_list	*current;
+
+	i = 0;
+	current = stack;
+	while (current && current->status == 0)
+	{
+		i++;
+		current = current->next;
+	}
+	rtn = i;
+	if (current)
+		v = current->value;
+	while (current && current->next)
+	{
+		i++;
+		current = current->next;
+		if (current->value < v && (current->status == 1))
+			rtn = i;
+		if (current->value < v && (current->status == 1))
+			v = current->value;
+	}
+	return (rtn);
+}
+
+void	sort_indexes(t_list **stack_a, int size)
+{
+	t_list	*current;
+	int		i;
+	int		j;
+
+	j = 0;
+	while (j < size)
+	{
+		current = *stack_a;
+		i = find_lowest(*stack_a);
+		while (i != 0)
+		{
+			current = current->next;
+			i--;
+		}
+		current->status = 0;
+		current->index = j;
+		j++;
+	}
+	current = *stack_a;
+	while (current)
+	{
+		current->status = 1;
+		current = current->next;
+	}
+}
+
+void	sort_small_unordered(t_list **stack_a, t_list **stack_b, int size)
+{
+	while (ft_lstsize(*stack_a) > 3)
+	{
+		if (find_lowest(*stack_a) > (ft_lstsize(*stack_a) / 2))
+			while (find_lowest(*stack_a) != 0)
+				exec_command(stack_a, stack_b, "rra");
+		else
+			while (find_lowest(*stack_a) != 0)
+				exec_command(stack_a, stack_b, "ra");
+		exec_command(stack_a, stack_b, "pb");
+	}
+	// potential for an algorythm that can use rr and rrr
+	sort_tiny(stack_a, stack_b, find_lowest(*stack_a));
+	while (ft_lstsize(*stack_a) != size)
+	{
+		exec_command(stack_a, stack_b, "pa");
+	}
+}
+
+void	sort_small(t_list **stack_a, t_list **stack_b, int lowest)
+{
+	if (is_sorted(stack_a, ft_lstsize(*stack_a)) == 1)
+	return ;
+	if (!is_ordered(*stack_a, lowest))
+	{
+		sort_small_unordered(stack_a, stack_b, ft_lstsize(*stack_a));
+		return ;
+	}
+	if (find_lowest(*stack_a) >= (ft_lstsize(*stack_a) / 2))
+		while (!(is_sorted(stack_a, ft_lstsize(*stack_a)) == 1))
+			exec_command(stack_a, stack_b, "rra");
+	else
+		while (!(is_sorted(stack_a, ft_lstsize(*stack_a)) == 1))
+			exec_command(stack_a, stack_b, "ra");
+}
+
 void	sort_stack(t_list *stack_a, t_list *stack_b, int size)
 {
 	int	a = ft_lstsize(stack_a);
@@ -454,11 +522,11 @@ void	sort_stack(t_list *stack_a, t_list *stack_b, int size)
 	printlist(stack_b);
 	//code vvv //
 	if (size <= 3)
-	{
-		sort_tiny(&stack_a, &stack_b, size);
-	}
+		sort_tiny(&stack_a, &stack_b, find_lowest(stack_a));
+	else if (size <= 7)
+		sort_small(&stack_a, &stack_b, find_lowest(stack_a));
 	//code ^^^ //
-	ft_printf("Is sorted: %d\n", is_sorted(&stack_a, &stack_b, size));
+	ft_printf("Is sorted: %d\n", is_sorted(&stack_a, size));
 	printlist(stack_a);
 	printlist(stack_b);
 	//code vvv //
@@ -489,6 +557,10 @@ int	main(int argv, char **argc)
 	sort_stack(stack_a, NULL, ft_lstsize(stack_a));
 	return (1);
 }
+// <= 3 values gets sorted by hard coded algorithm
+// > 3 - <= 7 gets sorted by insertion sort algorithm
+// > 7 - <= 100 gets sorted by case sort
+// > 100 gets sorted also by case sort
 
 // CHANGE ' ' TO '\n' AFTER TESTING!!!
 // double check that all printfs are ft_printfs
@@ -515,4 +587,30 @@ int	main(int argv, char **argc)
 		i++;
 	}
 	return (lst);
+} */
+
+/* int find_lowest(t_list *stack)
+{
+	int		rtn;
+	int		i;
+	int		v;
+	t_list	*current;
+
+	i = 0;
+	rtn = 0;
+	if (!stack)
+		return (-1);
+	current = stack;
+	v = current->value;
+	while (current->next)
+	{
+		i++;
+		current = current->next;
+		if (current->value < v)
+		{
+			v = current->value;
+			rtn = i;
+		}
+	}
+	return (rtn);
 } */
