@@ -476,6 +476,7 @@ void	sort_indexes(t_list **stack_a, int size)
 	}
 }
 
+// potential for an algorythm that can use rr, rrr, ss
 void	sort_small_unordered(t_list **stack_a, t_list **stack_b, int size)
 {
 	while (ft_lstsize(*stack_a) > 3)
@@ -486,10 +487,12 @@ void	sort_small_unordered(t_list **stack_a, t_list **stack_b, int size)
 		else
 			while (find_lowest(*stack_a) != 0)
 				exec_command(stack_a, stack_b, "ra");
+		if (is_sorted(stack_a, ft_lstsize(*stack_a)))
+			break;
 		exec_command(stack_a, stack_b, "pb");
 	}
-	// potential for an algorythm that can use rr and rrr
-	sort_tiny(stack_a, stack_b, find_lowest(*stack_a));
+	if (!(is_sorted(stack_a, ft_lstsize(*stack_a))))
+		sort_tiny(stack_a, stack_b, find_lowest(*stack_a));
 	while (ft_lstsize(*stack_a) != size)
 	{
 		exec_command(stack_a, stack_b, "pa");
@@ -513,6 +516,122 @@ void	sort_small(t_list **stack_a, t_list **stack_b, int lowest)
 			exec_command(stack_a, stack_b, "ra");
 }
 
+int	find_average(t_list *stack)
+{
+	t_list	*current;
+	long long	average;
+	int		size;
+
+	size = ft_lstsize(stack);
+	current = stack;
+	average = current->value;
+	current = current->next;
+	while (current)
+	{
+		average = (average + current->value);
+		current = current->next;
+	}
+	average = average / size;
+	return (average);
+}
+
+int find_largest(t_list *stack)
+{
+	int		rtn;
+	int		i;
+	int		v;
+	t_list	*current;
+
+	i = 0;
+	current = stack;
+	while (current && current->status == 0)
+	{
+		i++;
+		current = current->next;
+	}
+	rtn = i;
+	if (current)
+		v = current->value;
+	while (current && current->next)
+	{
+		i++;
+		current = current->next;
+		if (current->value > v && (current->status == 1))
+			rtn = i;
+		if (current->value > v && (current->status == 1))
+			v = current->value;
+	}
+	return (rtn);
+}
+
+void	sort_big(t_list **stack_a, t_list **stack_b, int lowest, int size)
+{
+	t_list	*a;
+	t_list	*b;
+
+	a = *stack_a;
+	b = *stack_b;
+	while (a->next)
+	{
+		sort_indexes(stack_a, ft_lstsize(*stack_a));
+		if (a->index < (ft_lstsize(*stack_a) * 0.1))
+		{
+			exec_command(stack_a, stack_b, "pb");
+		}
+		else
+			exec_command(stack_a, stack_b, "ra");
+		a = *stack_a;
+		b = *stack_b;
+	}
+	sort_indexes(stack_b, ft_lstsize(*stack_b));
+	// printlist(*stack_a);
+	// printlist(*stack_b);
+	while (*stack_b)
+	{
+		if (find_largest(*stack_b) > (ft_lstsize(*stack_b) / 2))
+			while (find_largest(*stack_b) != 0)
+				exec_command(stack_a, stack_b, "rrb");
+		else
+			while (find_largest(*stack_b) != 0)
+				exec_command(stack_a, stack_b, "rb");
+		exec_command(stack_a, stack_b, "pa");
+	}
+}
+
+/* void	sort_big(t_list **stack_a, t_list **stack_b, int lowest, int size)
+{
+	t_list	*a;
+	t_list	*b;
+	//7500 moves at 500
+	a = *stack_a;
+	b = *stack_b;
+	while (a->next)
+	{
+		sort_indexes(stack_a, ft_lstsize(*stack_a));
+		if (a->index < (ft_lstsize(*stack_a) * 0.1))
+			exec_command(stack_a, stack_b, "pb");
+		a = *stack_a;
+		b = *stack_b;
+		if (a->next)
+			exec_command(stack_a, stack_b, "ra");
+		a = *stack_a;
+		b = *stack_b;
+	}
+	sort_indexes(stack_b, ft_lstsize(*stack_b));
+	// printlist(*stack_a);
+	// printlist(*stack_b);
+	while (*stack_b)
+	{
+		if (find_largest(*stack_b) > (ft_lstsize(*stack_b) / 2))
+			while (find_largest(*stack_b) != 0)
+				exec_command(stack_a, stack_b, "rrb");
+		else
+			while (find_largest(*stack_b) != 0)
+				exec_command(stack_a, stack_b, "rb");
+		exec_command(stack_a, stack_b, "pa");
+	}
+} */
+
 void	sort_stack(t_list *stack_a, t_list *stack_b, int size)
 {
 	int	a = ft_lstsize(stack_a);
@@ -524,7 +643,9 @@ void	sort_stack(t_list *stack_a, t_list *stack_b, int size)
 	if (size <= 3)
 		sort_tiny(&stack_a, &stack_b, find_lowest(stack_a));
 	else if (size <= 7)
-		sort_small(&stack_a, &stack_b, find_lowest(stack_a));
+	 	sort_small(&stack_a, &stack_b, find_lowest(stack_a));
+	else
+		sort_big(&stack_a, &stack_b, find_lowest(stack_a), ft_lstsize(stack_a));
 	//code ^^^ //
 	ft_printf("Is sorted: %d\n", is_sorted(&stack_a, size));
 	printlist(stack_a);
@@ -557,10 +678,10 @@ int	main(int argv, char **argc)
 	sort_stack(stack_a, NULL, ft_lstsize(stack_a));
 	return (1);
 }
-// <= 3 values gets sorted by hard coded algorithm
-// > 3 - <= 7 gets sorted by insertion sort algorithm
-// > 7 - <= 100 gets sorted by case sort
-// > 100 gets sorted also by case sort
+// <= 3 values gets sorted by hard coded algorithm (max 3 moves) rn max 2-3
+// > 3 - <= 7 gets sorted by insertion sort algorithm (max 12 at 5 moves) rn max 11
+// > 7 - <= 100 gets sorted by case sort (max 1500 at 100) rn ~840
+// > 100 gets sorted also by case sort (max 11500 at 500) rn ~7400
 
 // CHANGE ' ' TO '\n' AFTER TESTING!!!
 // double check that all printfs are ft_printfs
