@@ -10,33 +10,63 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/* 
-I have a stack of unique unsorted integers, I want to sort them with the lowest
-value at the top of stack A. I have a second empty stack i can use as well as
-the following commands:
-sa (swap a): Swap the first 2 elements at the top of stack a.
-Do nothing if there is only one or no elements.
-sb (swap b): Swap the first 2 elements at the top of stack b.
-Do nothing if there is only one or no elements.
-ss : sa and sb at the same time.
-pa (push a): Take the first element at the top of b and put it at the top of a.
-Do nothing if b is empty.
-pb (push b): Take the first element at the top of a and put it at the top of b.
-Do nothing if a is empty.
-ra (rotate a): Shift up all elements of stack a by 1.
-The first element becomes the last one.
-rb (rotate b): Shift up all elements of stack b by 1.
-The first element becomes the last one.
-rr : ra and rb at the same time.
-rra (reverse rotate a): Shift down all elements of stack a by 1.
-The last element becomes the first one.
-rrb (reverse rotate b): Shift down all elements of stack b by 1.
-The last element becomes the first one.
-rrr : rra and rrb at the same time.
-How can I sort stack A in the least amount of moves?
-*/
-
 #include "push_swap.h"
+
+// Functions for Demonstration
+/* void	printlist(t_list *lst)
+{
+	t_list	*current;
+	int		i;
+
+	i = 0;
+	current = lst;
+	if (!lst)
+	{
+		ft_printf("List %p contents:\nNULL\n", lst);
+		return ;
+	}
+	ft_printf("List %p contents:\n", lst);
+	while (current)
+	{
+		ft_printf("Node: %d,	Index: %d,	Value: %d,	Status: %d\n",
+			i, current->index, current->value, current->status);
+		current = current->next;
+		i++;
+	}
+}
+
+// made for ranges -500 to 500
+void	printlist2(t_list *lst)
+{
+	t_list	*current;
+	int		i;
+	int		j;
+
+
+	i = 0;
+	j = 0;
+	current = lst;
+	if (!lst)
+	{
+		ft_printf("List %p contents:\nNULL\n", lst);
+		return ;
+	}
+	ft_printf("List %p contents:\n", lst);
+	while (current)
+	{
+		ft_printf("%d = ", j);
+		i = current->value;
+		i += 500;
+		while (i > 0)
+		{
+			ft_printf("O");
+			i -= 10;
+		}
+		ft_printf("\n");
+		current = current->next;
+		j++;
+	}
+} */
 
 int	freearray(char **array)
 {
@@ -206,28 +236,6 @@ t_list	*strarray_to_intlist(char **array)
 	return (lst);
 }
 
-void	printlist(t_list *lst)
-{
-	t_list	*current;
-	int		i;
-
-	i = 0;
-	current = lst;
-	if (!lst)
-	{
-		ft_printf("List %p contents:\nNULL\n", lst);
-		return ;
-	}
-	ft_printf("List %p contents:\n", lst);
-	while (current)
-	{
-		ft_printf("Node: %d,	Index: %d,	Value: %d,	Status: %d\n",
-			i, current->index, current->value, current->status);
-		current = current->next;
-		i++;
-	}
-}
-
 int	check_lst_for_dup(t_list *lst)
 {
 	t_list	*current;
@@ -254,7 +262,7 @@ int	check_lst_for_dup(t_list *lst)
 
 t_list	*swap_nodes(t_list *first_node)
 {
-	t_list *second_node;
+	t_list	*second_node;
 
 	if (!first_node->next)
 	{
@@ -286,7 +294,7 @@ t_list	*rotate_list(t_list *list, int rotation)
 	t_list	*rtn;
 
 	if (!list || rotation == 0)
-		return(NULL);
+		return (NULL);
 	if (rotation >= 0)
 	{
 		rtn = list->next;
@@ -298,7 +306,7 @@ t_list	*rotate_list(t_list *list, int rotation)
 	{
 		temp = list;
 		rtn = temp->next;
-		while(rtn->next)
+		while (rtn->next)
 		{
 			temp = temp->next;
 			rtn = rtn->next;
@@ -355,7 +363,7 @@ int	is_sorted(t_list **stack, int size)
 {
 	t_list	*current;
 	t_list	*next;
-	
+
 	current = *stack;
 	if ((ft_lstsize(*stack) != size))
 		return (0);
@@ -369,11 +377,11 @@ int	is_sorted(t_list **stack, int size)
 	return (1);
 }
 
-int is_ordered(t_list *stack_a, int lowest)
+int	is_ordered(t_list *stack_a, int lowest)
 {
-	int	i;
-	t_list *last;
-	t_list *current;
+	int		i;
+	t_list	*last;
+	t_list	*current;
 
 	current = stack_a;
 	while (lowest != 0)
@@ -412,14 +420,14 @@ void	sort_tiny(t_list **stack_a, t_list **stack_b, int lowest)
 	{
 		if (lowest == 0)
 			exec_command(stack_a, stack_b, "ra");
-		else if(lowest == 1)
+		else if (lowest == 1)
 			exec_command(stack_a, stack_b, "rra");
 		exec_command(stack_a, stack_b, "sa");
 		exec_command(stack_a, stack_b, "rra");
 	}
 }
 
-int find_lowest(t_list *stack)
+int	find_lowest(t_list *stack)
 {
 	int		rtn;
 	int		i;
@@ -476,7 +484,6 @@ void	sort_indexes(t_list **stack_a, int size)
 	}
 }
 
-// potential for an algorythm that can use rr, rrr, ss
 void	sort_small_unordered(t_list **stack_a, t_list **stack_b, int size)
 {
 	while (ft_lstsize(*stack_a) > 3)
@@ -488,21 +495,19 @@ void	sort_small_unordered(t_list **stack_a, t_list **stack_b, int size)
 			while (find_lowest(*stack_a) != 0)
 				exec_command(stack_a, stack_b, "ra");
 		if (is_sorted(stack_a, ft_lstsize(*stack_a)))
-			break;
+			break ;
 		exec_command(stack_a, stack_b, "pb");
 	}
 	if (!(is_sorted(stack_a, ft_lstsize(*stack_a))))
 		sort_tiny(stack_a, stack_b, find_lowest(*stack_a));
 	while (ft_lstsize(*stack_a) != size)
-	{
 		exec_command(stack_a, stack_b, "pa");
-	}
 }
 
 void	sort_small(t_list **stack_a, t_list **stack_b, int lowest)
 {
 	if (is_sorted(stack_a, ft_lstsize(*stack_a)) == 1)
-	return ;
+		return ;
 	if (!is_ordered(*stack_a, lowest))
 	{
 		sort_small_unordered(stack_a, stack_b, ft_lstsize(*stack_a));
@@ -516,26 +521,7 @@ void	sort_small(t_list **stack_a, t_list **stack_b, int lowest)
 			exec_command(stack_a, stack_b, "ra");
 }
 
-int	find_average(t_list *stack)
-{
-	t_list	*current;
-	long long	average;
-	int		size;
-
-	size = ft_lstsize(stack);
-	current = stack;
-	average = current->value;
-	current = current->next;
-	while (current)
-	{
-		average = (average + current->value);
-		current = current->next;
-	}
-	average = average / size;
-	return (average);
-}
-
-int find_largest(t_list *stack)
+int	find_largest(t_list *stack)
 {
 	int		rtn;
 	int		i;
@@ -564,96 +550,69 @@ int find_largest(t_list *stack)
 	return (rtn);
 }
 
-void	sort_big(t_list **stack_a, t_list **stack_b, int lowest, int size)
+void	sort_big2(t_list **s_a, t_list **s_b)
 {
 	t_list	*a;
 	t_list	*b;
 
-	a = *stack_a;
-	b = *stack_b;
-	while (a->next)
+	a = *s_a;
+	b = *s_b;
+	if (ft_lstsize(a) <= 3)
+		sort_tiny(s_a, s_b, find_lowest(*s_a));
+	else
+		sort_small(s_a, s_b, find_lowest(*s_a));
+	while (*s_b)
 	{
-		sort_indexes(stack_a, ft_lstsize(*stack_a));
-		if (a->index < (ft_lstsize(*stack_a) * 0.1))
-		{
-			exec_command(stack_a, stack_b, "pb");
-		}
+		if (find_largest(*s_b) > (ft_lstsize(*s_b) / 2))
+			while (find_largest(*s_b) != 0)
+				exec_command(s_a, s_b, "rrb");
 		else
-			exec_command(stack_a, stack_b, "ra");
-		a = *stack_a;
-		b = *stack_b;
-	}
-	sort_indexes(stack_b, ft_lstsize(*stack_b));
-	// printlist(*stack_a);
-	// printlist(*stack_b);
-	while (*stack_b)
-	{
-		if (find_largest(*stack_b) > (ft_lstsize(*stack_b) / 2))
-			while (find_largest(*stack_b) != 0)
-				exec_command(stack_a, stack_b, "rrb");
-		else
-			while (find_largest(*stack_b) != 0)
-				exec_command(stack_a, stack_b, "rb");
-		exec_command(stack_a, stack_b, "pa");
+			while (find_largest(*s_b) != 0)
+				exec_command(s_a, s_b, "rb");
+		exec_command(s_a, s_b, "pa");
 	}
 }
 
-/* void	sort_big(t_list **stack_a, t_list **stack_b, int lowest, int size)
+void	sort_big(t_list **s_a, t_list **s_b, t_list *a, t_list *b)
 {
-	t_list	*a;
-	t_list	*b;
-	//7500 moves at 500
-	a = *stack_a;
-	b = *stack_b;
-	while (a->next)
+	while (ft_lstsize(*s_a) > 3 && (!is_ordered(*s_a, find_lowest(*s_a))))
 	{
-		sort_indexes(stack_a, ft_lstsize(*stack_a));
-		if (a->index < (ft_lstsize(*stack_a) * 0.1))
-			exec_command(stack_a, stack_b, "pb");
-		a = *stack_a;
-		b = *stack_b;
-		if (a->next)
-			exec_command(stack_a, stack_b, "ra");
-		a = *stack_a;
-		b = *stack_b;
-	}
-	sort_indexes(stack_b, ft_lstsize(*stack_b));
-	// printlist(*stack_a);
-	// printlist(*stack_b);
-	while (*stack_b)
-	{
-		if (find_largest(*stack_b) > (ft_lstsize(*stack_b) / 2))
-			while (find_largest(*stack_b) != 0)
-				exec_command(stack_a, stack_b, "rrb");
+		a = *s_a;
+		b = *s_b;
+		sort_indexes(s_a, ft_lstsize(*s_a));
+		if (a->index < (ft_lstsize(*s_a) * 0.095))
+		{
+			if (b && b->next && a->value < b->value)
+				exec_command(s_a, s_b, "rb");
+			exec_command(s_a, s_b, "pb");
+		}
+		else if (a->next->index < (ft_lstsize(*s_a) * 0.095))
+		{
+			if (b && b->next && a->next->value < b->value)
+				exec_command(s_a, s_b, "rr");
+			else
+				exec_command(s_a, s_b, "ra");
+			exec_command(s_a, s_b, "pb");
+		}
 		else
-			while (find_largest(*stack_b) != 0)
-				exec_command(stack_a, stack_b, "rb");
-		exec_command(stack_a, stack_b, "pa");
+			exec_command(s_a, s_b, "ra");
 	}
-} */
+	sort_big2(s_a, s_b);
+}
 
 void	sort_stack(t_list *stack_a, t_list *stack_b, int size)
 {
-	int	a = ft_lstsize(stack_a);
-	int	b = ft_lstsize(stack_b);
-	ft_printf("stack sizes	a: %d	b: %d	given: %d\n", a, b, size);
-	printlist(stack_a);
-	printlist(stack_b);
-	//code vvv //
 	if (size <= 3)
 		sort_tiny(&stack_a, &stack_b, find_lowest(stack_a));
 	else if (size <= 7)
-	 	sort_small(&stack_a, &stack_b, find_lowest(stack_a));
+		sort_small(&stack_a, &stack_b, find_lowest(stack_a));
 	else
-		sort_big(&stack_a, &stack_b, find_lowest(stack_a), ft_lstsize(stack_a));
-	//code ^^^ //
-	ft_printf("Is sorted: %d\n", is_sorted(&stack_a, size));
-	printlist(stack_a);
-	printlist(stack_b);
-	//code vvv //
+		sort_big(&stack_a, &stack_b, NULL, NULL);
 	ft_lstclearmod(&stack_a);
 	ft_lstclearmod(&stack_b);
 }
+	// ft_printf("Is sorted: %d\n", is_sorted(&stack_a, size));
+	// printlist(stack_a);
 
 int	main(int argv, char **argc)
 {
@@ -678,15 +637,12 @@ int	main(int argv, char **argc)
 	sort_stack(stack_a, NULL, ft_lstsize(stack_a));
 	return (1);
 }
-// <= 3 values gets sorted by hard coded algorithm (max 3 moves) rn max 2-3
-// > 3 - <= 7 gets sorted by insertion sort algorithm (max 12 at 5 moves) rn max 11
-// > 7 - <= 100 gets sorted by case sort (max 1500 at 100) rn ~840
-// > 100 gets sorted also by case sort (max 11500 at 500) rn ~7400
+// <= 3 values gets sorted by hard coded solution,		max moves 2-3
+// > 3 - <= 7 gets sorted by insertion sort algorithm,	max moves 11
+// > 7 - <= 100 gets sorted by case sort,				avg moves ~700	max 1131
+// 500 elements gets sorted by case sort,				avg moves ~5700	max 6492
 
-// CHANGE ' ' TO '\n' AFTER TESTING!!!
-// double check that all printfs are ft_printfs
-
-// Code Cemetary VVV
+//  	Code Cemetary
 
 /* t_list	*empty_intlst(int size)
 {
@@ -734,4 +690,52 @@ int	main(int argv, char **argc)
 		}
 	}
 	return (rtn);
+} */
+
+/* int	find_closest_low(t_list **stack_a, int size)
+{
+	int	i;
+	int	a;
+	int b;
+	t_list *half;	
+
+	i = 0;
+	a = -1;
+	half = *stack_a;
+	while (i < (size / 2))
+	{
+		if (a == -1 && half->index < (ft_lstsize(*stack_a) * 0.1))
+			a = i;
+		half = half->next;
+		i++;
+	}
+	while (half)
+	{
+		if (half->index < (ft_lstsize(*stack_a) * 0.1))
+			b = i;
+		half = half->next;
+		i--;
+	}
+	if (a == -1 || b < a)
+		return (0);
+	return (1);	
+} */
+
+/* int	find_average(t_list *stack)
+{
+	t_list	*current;
+	long long	average;
+	int		size;
+
+	size = ft_lstsize(stack);
+	current = stack;
+	average = current->value;
+	current = current->next;
+	while (current)
+	{
+		average = (average + current->value);
+		current = current->next;
+	}
+	average = average / size;
+	return (average);
 } */
