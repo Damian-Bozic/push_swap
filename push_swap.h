@@ -13,10 +13,7 @@
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
-# include "unistd.h"
-# include "stdlib.h"
-# include "stdio.h"
-# include "stdarg.h"
+# include "Libft/libft.h"
 
 typedef struct s_list
 {
@@ -26,55 +23,28 @@ typedef struct s_list
 	struct s_list	*next;
 }		t_list;
 
-void	ft_lstadd_front(t_list **lst, t_list *new);
-int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-void	ft_lstiter(t_list *lst, void (*f)(void *));
-t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
-
-int		ft_printf(const char *str, ...);
-int		ft_printf_c(char c);
-int		ft_printf_s(char *str);
-int		ft_printf_p(void *ptr);
-int		ft_printf_d(int d);
-int		ft_printf_u(unsigned int u);
-int		ft_printf_xx(int d, int x);
-
-int		ft_isalpha(int c);
-int		ft_isdigit(int c);
-int		ft_isalnum(int c);
-int		ft_isascii(int c);
-int		ft_isprint(int c);
-size_t	ft_strlen(const char *str);
-void	*ft_memset(void *str, int c, size_t n);
-void	ft_bzero(void *str, size_t n);
-void	*ft_memcpy(void *dest, const void *src, size_t n);
-void	*ft_memmove(void *dest, const void *src, size_t n);
-size_t	ft_strlcpy(char *dest, const char *src, size_t n);
-size_t	ft_strlcat(char *dest, const char *src, size_t n);
-int		ft_toupper(int c);
-int		ft_tolower(int c);
-char	*ft_strchr(const char *str, int c);
-char	*ft_strrchr(const char *str, int c);
-int		ft_strncmp(const char *str1, const char *str2, size_t n);
-void	*ft_memchr(const void *str, int c, size_t n);
-int		ft_memcmp(const void *str1, const void *str2, size_t n);
-char	*ft_strnstr(const char *big, const char *little, size_t n);
-int		ft_atoi(const char *nptr);
-void	*ft_calloc(size_t nmemb, size_t size);
-char	*ft_strdup(const char *str);
-
-char	*ft_substr(char const *str, unsigned int start, size_t n);
-char	*ft_strjoin(char const *str1, char const *str2);
-char	*ft_strtrim(char const *str, char const *set);
-char	**ft_split(char const *str, char c);
-char	*ft_itoa(int n);
-char	*ft_strmapi(char const *str, char (*f)(unsigned int, char));
-void	ft_striteri(char *str, void (*f)(unsigned int, char*));
-void	ft_putchar_fd(char c, int fd);
-void	ft_putstr_fd(char *str, int fd);
-void	ft_putendl_fd(char *str, int fd);
-void	ft_putnbr_fd(int n, int fd);
+int		ft_lstsize(t_list *lst);
+void	exec_command(t_list **stack_a, t_list **stack_b, char *cmd);
+t_list	*swap_nodes(t_list *first_node);
+t_list	*push_node(t_list *sender, t_list **id_reciever);
+t_list	*rotate_list(t_list *list, int rotation);
+int		check_lst_for_dup(t_list *lst);
+int		ft_atoimod(const char *nptr, int *rtn);
+int		checkfilters(char **array);
+char	**arraydup(char **array);
+int		freearray(char **array);
+t_list	*strarray_to_intlist(char **array);
+void	ft_lstclearmod(t_list **lst);
+void	ft_lstadd_rear(t_list **lst, t_list *new_node);
+t_list	*ft_intlstnew(int integer, int index, int status);
+int		find_largest(t_list *stack);
+void	sort_indexes(t_list **stack_a, int size);
+int		find_lowest(t_list *stack);
+int		is_ordered(t_list *stack_a, int lowest);
+int		is_sorted(t_list **stack, int size);
+void	sort_tiny(t_list **stack_a, t_list **stack_b, int lowest);
+void	sort_small(t_list **stack_a, t_list **stack_b, int lowest);
+void	sort_big(t_list **s_a, t_list **s_b, t_list *a, t_list *b);
 
 #endif
