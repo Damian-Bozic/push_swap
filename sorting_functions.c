@@ -12,6 +12,7 @@
 
 #include "push_swap.h"
 
+// <= 3
 void	sort_tiny(t_list **stack_a, t_list **stack_b, int lowest)
 {
 	if (is_sorted(stack_a, ft_lstsize(*stack_a)) == 1)
@@ -54,6 +55,7 @@ static void	sort_small_unordered(t_list **stack_a, t_list **stack_b, int size)
 		exec_command(stack_a, stack_b, "pa");
 }
 
+// > 3 && <= 7
 void	sort_small(t_list **stack_a, t_list **stack_b, int lowest)
 {
 	if (is_sorted(stack_a, ft_lstsize(*stack_a)) == 1)
@@ -94,6 +96,7 @@ static void	sort_big2(t_list **s_a, t_list **s_b)
 	}
 }
 
+// > 7
 void	sort_big(t_list **s_a, t_list **s_b, t_list *a, t_list *b)
 {
 	while (ft_lstsize(*s_a) > 3 && (!is_ordered(*s_a, find_lowest(*s_a))))

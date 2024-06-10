@@ -103,105 +103,14 @@ int	main(int argc, char **argv)
 	sort_stack(stack_a, NULL, ft_lstsize(stack_a));
 	return (1);
 }
-// <= 3 values gets sorted by hard coded solution,		max moves 2-3
-// > 3 - <= 7 gets sorted by insertion sort algorithm,	max moves 11
-// > 7 - <= 100 gets sorted by case sort,				avg moves ~700	max 1131
-// 500 elements gets sorted by case sort,				avg moves ~5700	max 6492
+// <= 3
+//max moves 2-3
 
-//  	Code Cemetary
+// > 3 - <= 5
+//max moves 11
 
-/* t_list	*empty_intlst(int size)
-{
-	t_list	*lst;
-	t_list	*new_node;
-	int		i;
+// > 5 - <= 100
+//avg moves ~700	max 1131
 
-	if (size <= 0)
-		return (NULL);
-	i = 0;
-	lst = NULL;
-	new_node = lst;
-	while (size > 0)
-	{
-		new_node = ft_intlstnew(0, i, 0);
-		ft_lstadd_rear(&lst, new_node);
-		new_node = NULL;
-		size--;
-		i++;
-	}
-	return (lst);
-} */
-
-/* int find_lowest(t_list *stack)
-{
-	int		rtn;
-	int		i;
-	int		v;
-	t_list	*current;
-
-	i = 0;
-	rtn = 0;
-	if (!stack)
-		return (-1);
-	current = stack;
-	v = current->value;
-	while (current->next)
-	{
-		i++;
-		current = current->next;
-		if (current->value < v)
-		{
-			v = current->value;
-			rtn = i;
-		}
-	}
-	return (rtn);
-} */
-
-/* int	find_closest_low(t_list **stack_a, int size)
-{
-	int	i;
-	int	a;
-	int b;
-	t_list *half;	
-
-	i = 0;
-	a = -1;
-	half = *stack_a;
-	while (i < (size / 2))
-	{
-		if (a == -1 && half->index < (ft_lstsize(*stack_a) * 0.1))
-			a = i;
-		half = half->next;
-		i++;
-	}
-	while (half)
-	{
-		if (half->index < (ft_lstsize(*stack_a) * 0.1))
-			b = i;
-		half = half->next;
-		i--;
-	}
-	if (a == -1 || b < a)
-		return (0);
-	return (1);	
-} */
-
-/* int	find_average(t_list *stack)
-{
-	t_list	*current;
-	long long	average;
-	int		size;
-
-	size = ft_lstsize(stack);
-	current = stack;
-	average = current->value;
-	current = current->next;
-	while (current)
-	{
-		average = (average + current->value);
-		current = current->next;
-	}
-	average = average / size;
-	return (average);
-} */
+// 500 elements
+//avg moves ~5700	max 6492
